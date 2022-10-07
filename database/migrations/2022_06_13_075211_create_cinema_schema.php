@@ -15,6 +15,12 @@ class CreateCinemaSchema extends Migration
 
     ## User Stories
 
+    ** movie table : id.,name, date_of_release,duration, created_at,updated_at ** 
+    ** showrooms : id, name,created_at,updated_at**
+    ** pricing : id, type='vip','couple', premium_percentage, price, created_at,updated_at **
+    ** seats : id, code, price_id,location, created_at, updated_at
+    ** shows : id, movie_id,showroom_id, status, created_at,updated_at**
+    ** show_seats : id, seat_id, show_id **  
 
      ** Movie exploration**
      * As a user I want to see which films can be watched and at what times
@@ -37,7 +43,62 @@ class CreateCinemaSchema extends Migration
      */
     public function up()
     {
-        throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
+
+        Schema::create('movies', function($table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->date('date_of_release');
+            $table->timestamps();
+        });
+
+        Schema::create('showrooms', function($table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('seat_types', function($table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->double('premium_percentage'); 
+            $table->timestamps();
+        });
+
+        Schema::create('seats', function($table) {
+            $table->increments('id');
+            $table->string('code');
+            $table->integer('seat_type_id')->unsigned();
+            $table->foreign('seat_type_id')->references('id')->on('seat_types')->onDelete('cascade');
+            $table->string('location');
+            $table->timestamps();
+        });
+
+        Schema::create('shows', function($table) {
+            $table->increments('id');
+            $table->integer('movie_id')->unsigned();
+            $table->foreign('movie_id')->references('id')->on('movies')->onDelete('cascade');            
+            $table->integer('showroom_id')->unsigned();
+            $table->foreign('showroom_id')->references('id')->on('showrooms')->onDelete('cascade');            
+            $table->dateTime('start');
+            $table->dateTime('end');
+            $table->double('price');
+            $table->tinyInteger('status');
+            $table->timestamps();
+        });
+
+        Schema::create('show_seats', function($table) {
+            $table->increments('id');
+            $table->integer('show_id')->unsigned();
+            $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');            
+            $table->integer('seat_id');
+            $table->foreign('seat_id')->references('id')->on('seats')->onDelete('cascade');   
+            $table->double('price');
+            $table->tinyInteger('status');
+            $table->timestamps();
+        });
+
+
+        // throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
     }
 
     /**

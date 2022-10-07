@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Date;
-
+use Carbon\Carbon;
 class EventsController extends BaseController
 {
     public function getWarmupEvents() {
@@ -183,10 +183,8 @@ class EventsController extends BaseController
 
     public function getFutureEventsWithWorkshops() {
         
-        $model = Event::leftJoin('workshops', function($join) {
-            $join->on('events.id', '=', 'workshops.event_id');
-          })->where('workshops.start', '>', date('Y-m-d H:i:s'))->get()->toArray(); 
         
+        $model = Event::with('workshop')->where('start','>=',Carbon::now())->get(); 
         return $model; 
     }
 }
