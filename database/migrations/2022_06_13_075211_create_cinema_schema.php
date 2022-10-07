@@ -15,7 +15,8 @@ class CreateCinemaSchema extends Migration
 
     ## User Stories
 
-     **Movie exploration**
+
+     ** Movie exploration**
      * As a user I want to see which films can be watched and at what times
      * As a user I want to only see the shows which are not booked out
 
